@@ -15,13 +15,15 @@ it('deletes the items after the test', () => {
   cy.get('li.todo').should('have.length', todos.length)
   cy.log('**cleaning up**')
   // remove every todo by clicking on the "destroy" button
-  // one by one
-  cy.get('li.todo .destroy').each(($button) => {
-    cy.wrap($button)
-      // the button only becomes visible on hover,
-      // thus we use "force: true" to click on it
-      // https://on.cypress.io/click
-      .click({ force: true })
+  // one by one and waiting for the UI to remove it
+  cy.intercept('DELETE', '/todos/*').as('del')
+  todos.forEach((todo, k) => {
+    cy.get('li.todo .destroy:first').click({ force: true })
+    cy.wait('@del')
+    cy.get('li.todo').should(
+      'have.length',
+      todos.length - k - 1,
+    )
   })
 })
 

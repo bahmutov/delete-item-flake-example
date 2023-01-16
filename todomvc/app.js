@@ -148,7 +148,7 @@ function appStart() {
       },
       removeTodo({ commit }, todo) {
         track('todo.remove', todo.title)
-        const randomDelay = 10 + Math.random() * 90
+        const randomDelay = 1000 + Math.random() * 90
         setTimeout(() => {
           axios.delete(`/todos/${todo.id}`).then(() => {
             console.log(
